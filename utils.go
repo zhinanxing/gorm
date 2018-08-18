@@ -26,8 +26,8 @@ var NowFunc = func() time.Time {
 var commonInitialisms = []string{"API", "ASCII", "CPU", "CSS", "DNS", "EOF", "GUID", "HTML", "HTTP", "HTTPS", "ID", "IP", "JSON", "LHS", "QPS", "RAM", "RHS", "RPC", "SLA", "SMTP", "SSH", "TLS", "TTL", "UID", "UI", "UUID", "URI", "URL", "UTF8", "VM", "XML", "XSRF", "XSS"}
 var commonInitialismsReplacer *strings.Replacer
 
-var goSrcRegexp = regexp.MustCompile(`jinzhu/gorm/.*.go`)
-var goTestRegexp = regexp.MustCompile(`jinzhu/gorm/.*test.go`)
+var goSrcRegexp = regexp.MustCompile(`john-deng/gorm/.*.go`)
+var goTestRegexp = regexp.MustCompile(`john-deng/gorm/.*test.go`)
 
 func init() {
 	var commonInitialismsForReplacer []string
@@ -119,15 +119,15 @@ func ToDBName(name string) string {
 }
 
 // SQL expression
-type expr struct {
+type Expression struct {
 	expr string
 	args []interface{}
 }
 
 // Expr generate raw SQL expression, for example:
 //     DB.Model(&product).Update("price", gorm.Expr("price * ? + ?", 2, 100))
-func Expr(expression string, args ...interface{}) *expr {
-	return &expr{expr: expression, args: args}
+func Expr(expression string, args ...interface{}) *Expression {
+	return &Expression{expr: expression, args: args}
 }
 
 func indirect(reflectValue reflect.Value) reflect.Value {
