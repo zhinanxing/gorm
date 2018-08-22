@@ -18,7 +18,6 @@ import (
 	"database/sql"
 	"time"
 	"fmt"
-	"errors"
 	"github.com/jinzhu/copier"
 )
 
@@ -59,10 +58,7 @@ func (r *FakeRepository) New() Repository {
 
 // Close close current db connection.  If database connection is not an io.Closer, returns an error.
 func (r *FakeRepository) Close() error {
-	if db, ok := r.Parent().SQLCommonDB().(closer); ok {
-		return db.Close()
-	}
-	return errors.New("can't close current db")
+	return nil
 }
 
 // DB get `*sql.DB` from current connection
