@@ -124,6 +124,11 @@ var ParseFieldStructForDialect = func(field *StructField, dialect Dialect) (fiel
 		additionalType = additionalType + " DEFAULT " + value
 	}
 
+	// Set comment tag 
+	if value, ok := field.TagSettings["COMMENT"]; ok{
+		additionalType = additionalType + " COMMENT " + value
+	}
+
 	return fieldValue, dataType, size, strings.TrimSpace(additionalType)
 }
 
