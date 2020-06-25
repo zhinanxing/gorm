@@ -48,6 +48,10 @@ type FakeRepository struct {
 	mockData      map[string]interface{}
 }
 
+func (r *FakeRepository) Transaction(fc func(tx Repository) error, opts ...*sql.TxOptions) error {
+	return fc(r)
+}
+
 // New clone a new db connection without search conditions
 func (r *FakeRepository) New() Repository {
 	clone := r.Clone()

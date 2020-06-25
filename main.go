@@ -112,8 +112,8 @@ type Repository interface {
 	Print(v ...interface{})
 	Values() map[string]interface{}
 	SetValues(vals map[string]interface{}) Repository
+	Transaction(fc func(tx Repository) error, opts ...*sql.TxOptions) error
 }
-
 
 // DB contains information for current db connection
 type repository struct {
@@ -143,10 +143,10 @@ type repository struct {
 //       db, err := gorm.Open("mysql", "user:password@/dbname?charset=utf8&parseTime=True&loc=Local")
 //     }
 // GORM has wrapped some drivers, for easier to remember driver's import path, so you could import the mysql driver with
-//    import _ "github.com/hidevopsio/gorm/dialects/mysql"
-//    // import _ "github.com/hidevopsio/gorm/dialects/postgres"
-//    // import _ "github.com/hidevopsio/gorm/dialects/sqlite"
-//    // import _ "github.com/hidevopsio/gorm/dialects/mssql"
+//    import _ "github.com/zhinanxing/gorm/dialects/mysql"
+//    // import _ "github.com/zhinanxing/gorm/dialects/postgres"
+//    // import _ "github.com/zhinanxing/gorm/dialects/sqlite"
+//    // import _ "github.com/zhinanxing/gorm/dialects/mssql"
 func Open(dialect string, args ...interface{}) (db Repository, err error) {
 	if len(args) == 0 {
 		err = errors.New("invalid database source")
@@ -173,7 +173,6 @@ func Open(dialect string, args ...interface{}) (db Repository, err error) {
 	default:
 		return nil, fmt.Errorf("invalid database source: %v is not a valid type", value)
 	}
-
 
 	db = new(repository).
 		SetSQLCommonDB(dbSQL).
@@ -860,7 +859,6 @@ func (r *repository) SetValue(v interface{}) Repository {
 	return r
 }
 
-
 func (r *repository) Error() error {
 	return r.err
 }
@@ -937,7 +935,6 @@ func (r *repository) SetDialect(d Dialect) Repository {
 	return r
 }
 
-
 ////////////////////////////////////////////////////////////////////////////////
 // Private Methods For DB
 ////////////////////////////////////////////////////////////////////////////////
@@ -983,4 +980,30 @@ func (r *repository) Slog(sql string, t time.Time, vars ...interface{}) {
 	if r.logMode == 2 {
 		r.Print("sql", fileWithLineNum(), NowFunc().Sub(t), sql, vars, r.RowsAffected())
 	}
+}
+
+// Transaction start a transaction as a block, return error will rollback, otherwise to commit.
+func (db *repository) Transaction(fc func(tx Repository) error, opts ...*sql.TxOptions) (err error) {
+	tx := db.Begin()
+	defer func() {
+		if err != nil {
+			tx.Rollback()
+		}
+	}()
+	err = tx.Error()
+	if err != nil {
+		db.logger.Print("begin transaction fail. err: %+v", err)
+		return err
+	}
+
+	err = fc(tx)
+	if err == nil {
+		err = tx.Commit().Error()
+		if err != nil {
+			db.logger.Print("begin transaction fail2. err: %+v", err)
+			return err
+		}
+	}
+	db.logger.Print("begin transaction fail3. err: %+v", err)
+	return err
 }
