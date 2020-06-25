@@ -1,4 +1,4 @@
-module github.com/zhinanxing/gorm/v2
+module github.com/zhinanxing/gorm/v3
 
 go 1.14
 
