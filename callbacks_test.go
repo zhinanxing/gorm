@@ -3,7 +3,7 @@ package gorm_test
 import (
 	"errors"
 
-	"github.com/zhinanxing/gorm"
+	"github.com/zhinanxing/gorm/v3"
 
 	"reflect"
 	"testing"

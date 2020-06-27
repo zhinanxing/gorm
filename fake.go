@@ -1,4 +1,4 @@
-// Copyright 2018 John Deng (hi.devops.io@gmail.com).
+// Copyright 2020 Ethan (ethan.202285@gmail.com).
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,9 +16,9 @@ package gorm
 
 import (
 	"database/sql"
-	"time"
 	"fmt"
 	"github.com/jinzhu/copier"
+	"time"
 )
 
 type Mocker interface {
@@ -664,7 +664,7 @@ func (r *FakeRepository) Expect(err error) {
 	r.SetError(err)
 }
 
-func (r *FakeRepository) copyData(name string, out interface{})  {
+func (r *FakeRepository) copyData(name string, out interface{}) {
 	md := r.mockData[name]
 	if md != nil {
 		copier.Copy(out, md)

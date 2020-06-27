@@ -2,12 +2,11 @@ package gorm_test
 
 import (
 	"fmt"
+	"github.com/zhinanxing/gorm/v3"
 	"os"
 	"reflect"
 	"sort"
 	"testing"
-
-	"github.com/zhinanxing/gorm"
 )
 
 func TestBelongsTo(t *testing.T) {
