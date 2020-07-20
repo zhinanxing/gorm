@@ -992,7 +992,7 @@ func (db *repository) Transaction(fc func(tx Repository) error, opts ...*sql.TxO
 	}()
 	err = tx.Error()
 	if err != nil {
-		db.logger.Print("begin transaction fail. err: %+v", err)
+		db.logger.Print("log","begin transaction fail. err: ", err)
 		return err
 	}
 
@@ -1000,10 +1000,10 @@ func (db *repository) Transaction(fc func(tx Repository) error, opts ...*sql.TxO
 	if err == nil {
 		err = tx.Commit().Error()
 		if err != nil {
-			db.logger.Print("begin transaction fail2. err: %+v", err)
+			db.logger.Print("log","begin transaction fail2. err: ", err)
 			return err
 		}
 	}
-	db.logger.Print("begin transaction fail3. err: %+v", err)
+	db.logger.Print("log","begin transaction success")
 	return err
 }
