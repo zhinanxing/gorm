@@ -11,12 +11,12 @@ import (
 //      gorm.Model
 //    }
 type Model struct {
-	ID        int64 `gorm:"primary_key"`
-	CreatedAt time.Time
-	UpdatedAt time.Time
-	ExtraJson string `gorm:"type:text"`
-	Extra map[string]interface{} `gorm:"-"`
-	DeletedAt *time.Time `sql:"index"`
+	ID        int64 `gorm:"primary_key" json:"id"`
+	CreatedAt time.Time `json:"createdAt"`
+	UpdatedAt time.Time `json:"updatedAt"`
+	ExtraJson string `gorm:"type:text" json:"-"`
+	Extra map[string]interface{} `gorm:"-" json:"extra"`
+	DeletedAt *time.Time `sql:"index" json:"deletedAt"`
 }
 
 func (m *Model) SetExtra(p map[string]interface{}) {
